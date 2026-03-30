@@ -159,10 +159,10 @@ export default function Home() {
             </div>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <StatCard label="Following" value="0" sub="Creators" icon="users" />
-              <StatCard label="Followers" value="0" sub="Learners" icon="spark" />
-              <StatCard label="Streak" value="0" sub="Days" icon="flame" />
-              <StatCard label="Total XP" value="0" sub="Points" icon="xp" />
+              <StatCard label="Following" value="12" sub="Creators" icon="users" />
+              <StatCard label="Followers" value="54" sub="Learners" icon="spark" />
+              <StatCard label="Streak" value="7" sub="Days" icon="flame" />
+              <StatCard label="Total XP" value="1200" sub="Points" icon="xp" />
             </div>
           </header>
 
@@ -192,25 +192,25 @@ export default function Home() {
                   <BadgeCard
                     title="Basic Profile"
                     desc="Add a username and pick a theme."
-                    progress="0/3"
+                    progress="1/3"
                     tone="fuchsia"
                   />
                   <BadgeCard
                     title="The Start"
                     desc="Solve 3 starter puzzles."
-                    progress="0/3"
+                    progress="2/3"
                     tone="cyan"
                   />
                   <BadgeCard
                     title="Daily Coder"
                     desc="Maintain a 3‑day streak."
-                    progress="0/3"
+                    progress="1/3"
                     tone="emerald"
                   />
                   <BadgeCard
                     title="Clean Streak"
                     desc="Practice 5 days without skipping."
-                    progress="0/5"
+                    progress="1/5"
                     tone="amber"
                   />
                 </div>
@@ -316,16 +316,26 @@ function SidebarItem({
   icon: IconName;
   active?: boolean;
 }) {
+  const isActive = !!active;
   return (
     <button
       type="button"
       className={[
         "group flex w-full items-center justify-between rounded-2xl px-3 py-2 text-left transition",
-        active ? "bg-white/10" : "hover:bg-white/10",
+        isActive
+          ? "bg-white/10 ring-1 ring-fuchsia-400/25"
+          : "hover:bg-white/10",
       ].join(" ")}
     >
       <span className="flex items-center gap-3">
-        <span className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-zinc-200 group-hover:bg-white/10">
+        <span
+          className={[
+            "grid h-9 w-9 place-items-center rounded-xl border text-zinc-200 transition",
+            isActive
+              ? "border-white/20 bg-gradient-to-br from-fuchsia-500/30 to-cyan-400/15"
+              : "border-white/10 bg-white/5 group-hover:bg-white/10",
+          ].join(" ")}
+        >
           <Icon name={icon} />
         </span>
         <span className="leading-tight">
@@ -333,8 +343,8 @@ function SidebarItem({
           <span className="block text-xs text-zinc-300/70">{hint}</span>
         </span>
       </span>
-      {active ? (
-        <span className="h-2 w-2 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-400" />
+      {isActive ? (
+        <span className="h-2 w-6 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-400" />
       ) : null}
     </button>
   );
@@ -376,6 +386,14 @@ function BadgeCard({
   progress: string;
   tone: "fuchsia" | "cyan" | "emerald" | "amber";
 }) {
+  const [currentRaw, totalRaw] = progress.split("/");
+  const current = Number(currentRaw);
+  const total = Number(totalRaw);
+  const rawPct = total > 0 ? (current / total) * 100 : 0;
+  // Keep a tiny "progress visible" bar when current is 0.
+  const pct =
+    current === 0 ? 8 : Math.max(0, Math.min(100, Math.round(rawPct)));
+
   const toneClasses =
     tone === "fuchsia"
       ? "from-fuchsia-500/25 to-fuchsia-500/0"
@@ -384,6 +402,15 @@ function BadgeCard({
         : tone === "emerald"
           ? "from-emerald-400/25 to-emerald-400/0"
           : "from-amber-300/25 to-amber-300/0";
+
+  const fillTone =
+    tone === "fuchsia"
+      ? "from-fuchsia-400 to-cyan-300"
+      : tone === "cyan"
+        ? "from-cyan-300 to-sky-300"
+        : tone === "emerald"
+          ? "from-emerald-300 to-cyan-300"
+          : "from-amber-300 to-orange-300";
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4">
@@ -404,7 +431,13 @@ function BadgeCard({
         </div>
       </div>
       <div className="relative mt-4 h-2 w-full rounded-full bg-white/10">
-        <div className="h-2 w-[6%] rounded-full bg-white/30" />
+        <div
+          className={[
+            "h-2 rounded-full bg-gradient-to-r",
+            fillTone,
+          ].join(" ")}
+          style={{ width: `${pct}%` }}
+        />
       </div>
     </div>
   );
