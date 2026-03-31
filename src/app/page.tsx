@@ -158,11 +158,14 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <StatCard label="Following" value="12" sub="Creators" icon="users" />
-              <StatCard label="Followers" value="54" sub="Learners" icon="spark" />
-              <StatCard label="Streak" value="7" sub="Days" icon="flame" />
-              <StatCard label="Total XP" value="1200" sub="Points" icon="xp" />
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
+              <StatCard
+                label="Progress"
+                value="7 days • 1200 XP"
+                sub="Current streak and total points"
+                icon="flame"
+              />
+              <StatCard label="Current league" value="🥉" sub="Bronze league" icon="trophy" />
             </div>
           </header>
 
@@ -190,26 +193,26 @@ export default function Home() {
 
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   <BadgeCard
-                    title="Basic Profile"
-                    desc="Add a username and pick a theme."
+                    title="Profile setup"
+                    desc="Complete your profile by adding your name and learning goal."
                     progress="1/3"
                     tone="fuchsia"
                   />
                   <BadgeCard
-                    title="The Start"
-                    desc="Solve 3 starter puzzles."
+                    title="First practice"
+                    desc="Finish your first 3 practice questions."
                     progress="2/3"
                     tone="cyan"
                   />
                   <BadgeCard
-                    title="Daily Coder"
-                    desc="Maintain a 3‑day streak."
+                    title="3-day consistency"
+                    desc="Practice for 3 days in a row."
                     progress="1/3"
                     tone="emerald"
                   />
                   <BadgeCard
-                    title="Clean Streak"
-                    desc="Practice 5 days without skipping."
+                    title="Week momentum"
+                    desc="Practice on 5 different days this week."
                     progress="1/5"
                     tone="amber"
                   />
@@ -261,40 +264,12 @@ export default function Home() {
             <div className="space-y-6">
               <div className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur sm:p-6">
                 <h2 className="text-base font-semibold tracking-tight">
-                  Get more
-                </h2>
-                <p className="mt-1 text-sm text-zinc-300/80">
-                  Unlock advanced paths and build a learning routine that sticks.
-                </p>
-                <button
-                  type="button"
-                  className="mt-4 w-full rounded-2xl bg-gradient-to-r from-amber-300 to-orange-400 px-4 py-3 text-sm font-extrabold text-zinc-950 hover:opacity-95"
-                >
-                  Go Pro
-                </button>
-              </div>
-
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur sm:p-6">
-                <h2 className="text-base font-semibold tracking-tight">
                   Actions
                 </h2>
                 <div className="mt-4 space-y-2">
                   <ActionRow label="Edit profile" icon="edit" />
                   <ActionRow label="Public profile" icon="globe" />
                   <ActionRow label="Preferences" icon="sliders" />
-                </div>
-              </div>
-
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur sm:p-6">
-                <h2 className="text-base font-semibold tracking-tight">
-                  Get social
-                </h2>
-                <div className="mt-4 space-y-2">
-                  <ActionRow label="Search friends" icon="search" />
-                  <ActionRow label="Refer a friend" icon="gift" />
-                </div>
-                <div className="mt-5 border-t border-white/10 pt-4 text-xs text-zinc-300/70">
-                  About • Certifications • Affiliate • Business • Blog
                 </div>
               </div>
             </div>
@@ -361,6 +336,8 @@ function StatCard({
   sub: string;
   icon: IconName;
 }) {
+  const isEmojiValue = /[\u{1F300}-\u{1FAFF}]/u.test(value);
+
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
       <div className="flex items-center justify-between">
@@ -369,7 +346,14 @@ function StatCard({
           <Icon name={icon} />
         </div>
       </div>
-      <div className="mt-3 text-2xl font-black tracking-tight">{value}</div>
+      <div
+        className={[
+          "mt-3 font-black tracking-tight",
+          isEmojiValue ? "text-5xl leading-none" : "text-2xl",
+        ].join(" ")}
+      >
+        {value}
+      </div>
       <div className="mt-1 text-xs text-zinc-300/70">{sub}</div>
     </div>
   );
